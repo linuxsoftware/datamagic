@@ -1,0 +1,18 @@
+<%inherit file="datamagic.html" />
+<%!
+from utils import AsyncWebData
+from astronomy import PictureOfTheDay
+apod = PictureOfTheDay()
+%>
+<% AsyncWebData.fetch(apod) %>
+${self.block()}
+
+<%def name="block()">
+  <%parent:block title="${apod.title}" colour="midnight">
+    <a href="${apod.link}">
+      <img src="${apod.url}" class="astronomyPicture" 
+           alt="Astronomy Picture of the Day"/>
+    </a>
+    <a class="apodlink" href="http://antwrp.gsfc.nasa.gov">APoD</a>
+  </%parent:block>
+</%def>

@@ -1,0 +1,39 @@
+<%inherit file="datamagic.html" />
+<%!
+from utils import AsyncWebData
+from weather import RainRadar, WeatherForecast
+radar    = RainRadar("Auckland")
+forecast = WeatherForecast("Auckland")
+%>
+<% AsyncWebData.fetch(radar, forecast) %>
+${self.block()}
+
+<%def name="block()">
+  <%parent:block title="Auckland rain ${radar.validFrom}" colour="blue">
+    <img src="${radar.url}" class="rainRadar" alt="Auckland rain"/>
+    <div class="weatherForecast">
+      <table border="0">
+        <tbody>
+          <tr>
+            %for day, icon, text in forecast:
+              <td valign="center" align="center" class="icon" title="${text}">
+                <img src="/datamagic/weather/${icon}.gif" width="16" height="16" 
+                     title="${text}" alt="${icon}" />
+              </td>
+            %endfor
+          </tr>
+          <tr>
+            %for day, icon, text in forecast:
+              <td valign="center" align="center" class="day" title="${text}">
+                ${day}
+              </td>
+            %endfor
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <a class="metservicelink" href="http://metservice.com">metservice</a>
+    <a class="metvuwlink" href="http://www.metvuw.com">metvuw</a>
+
+  </%parent:block>
+</%def>

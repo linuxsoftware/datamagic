@@ -1,0 +1,13 @@
+<%inherit file="datamagic.html" />
+<%!
+picture = "http://portal:sentinel@software.gen.nz/axis-cgi/jpg/image.cgi?resolution=320x240"
+#picture = "http://portal:sentinel@webcam.home/axis-cgi/jpg/image.cgi?resolution=320x240"
+%>
+${self.block()}
+
+<%def name="block()">
+  <%parent:block colour="orange">
+    <img src="${picture}" alt="Live webcam"/>
+    <a class="webcamlink" href="http://www.linuxsoftware.co.nz/webcam">webcam</a>
+  </%parent:block>
+</%def>

@@ -1,0 +1,43 @@
+<%inherit file="datamagic.html" />
+<%!
+import time
+import re
+from utils import AsyncWebData
+from aggregator import Feed
+blogRoll = ["http://www.asciimation.co.nz/bb/feed/atom",
+            "http://alweb.homeip.net/blog/?feed=atom",
+            "http://www.ctrlaltboutique.com/canada/?feed=rss2",
+            "http://blog.core-ed.net/derek/feed",
+            "http://feeds.feedburner.com/LifeOfAndrew",
+            "http://pedagogyofthecompressed.blogspot.com/feeds/posts/default",
+            "http://lorenz.co.nz/feed/atom",
+            "http://blog.loaz.com/timwang/index.php?tempskin=_atom"]
+# create async feeds
+feeds = [Feed(url) for url in blogRoll]
+%>
+<% AsyncWebData.fetch(feeds) %>
+${self.block()}
+
+<%def name="block()">
+  <%parent:textblock title="Blog Roll" colour="black">
+    %for feed in feeds:
+      %if feed.entries:
+        <div class="blog">
+          <div class="title" title="${feed.info.get('subtitle','')}">
+            <a href="${feed.info.link}">${feed.title}</a>
+          </div>
+          <div class="entry" title="${re.sub('<.*?>','',feed.entries[0].get('summary',''))[:70]}">
+            <%
+              today = time.localtime()[:3]
+              updated = feed.entries[0].updated_parsed[:3]
+              publishDay = "publishedToday" if today == updated else ""
+            %>
+            <a href="${feed.entries[0].link}" class="${publishDay}">
+              ${feed.entries[0].title}
+            </a>
+          </div>
+        </div>
+      %endif
+    %endfor
+  </%parent:textblock>
+</%def>

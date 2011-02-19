@@ -1,0 +1,6 @@
+password.py
+*.pyc
+*.o
+*.so
+*.log
+*.dat

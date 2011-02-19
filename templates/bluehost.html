@@ -1,0 +1,31 @@
+<%inherit file="datamagic.html" />
+<%!
+import os
+import time
+from utils import AsyncWebFetcher
+%>
+${self.block()}
+
+<%def name="block()">
+  <%parent:textblock colour="blue">
+    <div class="bluehost">
+      <a href="https://box655.bluehost.com:2083">Control Panel</a><br/>
+<%
+aliveSecs  = "%.1f" % (time.time() - AsyncWebFetcher.initStart)
+readSecs   = "%.1f" % (AsyncWebFetcher.cacheLoaded - AsyncWebFetcher.initStart)
+loadSecs   = "%.1f" % (AsyncWebFetcher.loopStart - AsyncWebFetcher.fetchStart)
+fetchSecs  = "%.1f" % (AsyncWebFetcher.fetchFinish - AsyncWebFetcher.fetchStart)
+renderSecs = "%.1f" % (time.time() - AsyncWebFetcher.fetchFinish)
+numFetched = AsyncWebFetcher.fromStats[AsyncWebFetcher.FromWeb]
+numLoaded  = AsyncWebFetcher.fromStats[AsyncWebFetcher.FromDisk]
+numCached  = AsyncWebFetcher.fromStats[AsyncWebFetcher.FromMem]
+%>
+      FastCGI server up: ${aliveSecs} secs.  <br/>
+      Reading in cache: ${readSecs} secs.  <br/>
+      Loading data: ${loadSecs} secs.  <br/>
+      (${numFetched} fetched, ${numLoaded} loaded, ${numCached} cached) <br/>
+      Fetching data: ${fetchSecs} secs.  <br/>
+      Rendering page: ${renderSecs} secs. <br/>
+    </div>
+  </%parent:textblock>
+</%def>

@@ -1,0 +1,32 @@
+<%inherit file="datamagic.html" />
+## import the templates
+<%namespace name="busstop"    file="busstop.html"   />
+<%namespace name="trafficcam" file="trafficcam.html"/>
+##<%namespace name="blogroll"   file="blogroll.html"      />
+<%namespace name="webcam"     file="webcam.html"    />
+<%namespace name="weather"    file="weather.html"   />
+##<%namespace name="lightning"  file="lightning.html" />
+<%namespace name="apod"       file="apod.html"      />
+<%namespace name="xkcd"       file="xkcd.html"      />
+<%namespace name="bluehost"   file="bluehost.html"      />
+<%namespace name="contact"    file="contact.html"   />
+
+## load all the data in parallel
+<%!from utils import AsyncWebFetcher%>
+<%AsyncWebFetcher.fetch()%>
+
+## render the blocks
+<%self:block><img src="/datamagic/north.jpg" alt=""/></%self:block>
+${busstop.block()}
+${trafficcam.block()}
+##${blogroll.block()}
+${apod.block()}
+${webcam.block()}
+${weather.block()}
+##${lightning.block()}
+${xkcd.block()}
+${contact.block()}
+${bluehost.block()}
+%for x in range(4):
+  <%self:block></%self:block>
+%endfor

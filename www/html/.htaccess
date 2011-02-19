@@ -1,0 +1,4 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^portal(.*) /cgi-bin/datamagic.fcgi/$1 [last,type=application/x-httpd-fcgi]
+</IfModule>

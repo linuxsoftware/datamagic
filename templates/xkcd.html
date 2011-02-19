@@ -1,0 +1,19 @@
+<%inherit file="datamagic.html" />
+<%!
+from utils import AsyncWebData
+from aggregator import Feed
+xkcd = Feed("http://xkcd.com/atom.xml")
+%>
+<% AsyncWebData.fetch(xkcd) %>
+${self.block()}
+
+<%def name="block()">
+  <%parent:block title="" colour="paper">
+    %if xkcd.entries:
+      <a href="${xkcd.entries[0].link}" class="xkcd">
+        ${xkcd.entries[0].summary}
+      </a>
+    %endif
+    <a class="xkcdlink" href="http://xkcd.org">xkcd</a>
+  </%parent:block>
+</%def>

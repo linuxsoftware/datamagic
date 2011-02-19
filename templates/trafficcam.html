@@ -1,0 +1,39 @@
+<%inherit file="datamagic.html" />
+<%!
+from utils import AsyncWebData
+from transport import MotorwayTraffic
+traffic = MotorwayTraffic("North-Western Motorway")
+%>
+<% AsyncWebData.fetch(traffic) %>
+${self.block()}
+
+<%def name="block()">
+  <%parent:block title="NorWestern Mway traffic ${traffic.updated}" colour="grey">
+    <img src="http://traffic.transit.govt.nz/camera/140.jpg" 
+         class="trafficCam" alt="NorWestern Mway traffic"/>
+    <div class="motorwayTraffic">
+      <table border="0">
+        <tbody>
+          %for outwards, name, inwards in traffic.segments[3:]:
+            <%
+              outIcon = outwards.lower().replace(" ", "") + "-out.png"
+              inIcon  = inwards.lower().replace(" ", "") + "-in.png"
+            %>
+            <tr>
+              <td class="outwards congestion">
+                <img src="/datamagic/traffic/${outIcon}" width=12" height="10"
+                     alt="${outwards}" title="${outwards}" />
+              </td>
+              <td class="name">${name}</td>
+              <td class="inwards congestion">
+                <img src="/datamagic/traffic/${inIcon}" width="12" height="10"
+                     alt="${inwards}" title="${inwards}" />
+              </td>
+            </tr>
+          %endfor
+        </tbody>
+      </table>
+    </div>
+    <a class="nztalink" href="http://www.trafficnz.info">nzta</a>
+  </%parent:block>
+</%def>

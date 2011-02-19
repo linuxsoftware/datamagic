@@ -1,0 +1,311 @@
+.tan     { background: #e0b29f; }
+.brown   { background: #ba9c80; }
+.wood    { background: #635445; }
+.blue    { background: #326fc9; }
+.midnight { background: midnightblue; }
+.flax    { background: #ade09f; }
+.green   { background: green;   }
+.yellow  { background: #ffff6f; }
+.paper   { background: #e8dd66; }
+.orange  { background: orange;  }
+.red     { background: red;     }
+.purple  { background: #d29fe0; }
+.sky     { background: #9fcee0; }
+.grey    { background: #bbb;    }
+.black   { background: black;   }
+
+.yellow .inset {
+    border-top:    1px solid #8d8d3e;
+    border-top:    1px solid #8d8d3e;
+    border-bottom: 1px solid #ffffd3;
+    border-bottom: 1px solid #ffffd3;
+}
+.tan .inset {
+    border-top:    1px solid #896d61;
+    border-left:   1px solid #896d61;
+    border-bottom: 1px solid #f3d1da;
+    border-right:  1px solid #f3d1da;
+}
+.blue .inset {
+    border-top:    2px solid #204881;
+    border-left:   2px solid #204881;
+    border-bottom: 2px solid #a8c2e8;
+    border-right:  2px solid #a8c2e8;
+}
+.green .inset {
+    border-top:    2px solid #005600;
+    border-left:   2px solid #005600;
+    border-bottom: 2px solid #8cc58c;
+    border-right:  2px solid #8cc58c;
+}
+
+body {
+  text-align: center;
+  font-family:"Liberation Sans",Verdana,Geneva,Arial,sans-serif;
+}
+p {
+    margin: 0;
+}
+img {
+    border: 0 none ; 
+    margin: 0pt;
+}
+.outer {
+    background: white;
+    padding: 4px;
+    display:-moz-inline-stack;
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+    text-align: left;
+    vertical-align: top;
+    margin-right: -4px;
+}
+.block {
+    margin:  0;
+    height:240px;
+    width: 250px;
+    position: relative;
+    overflow: hidden;
+}
+
+.block .inner {
+    padding: 4px 8px;
+}
+
+.block .corner {
+    position: absolute;
+    background-image:url(whitecorners.png);
+    background-repeat: no-repeat;
+    height: 8px;
+    width:  8px;
+    background-color: transparent;
+}
+.block .topleft {
+    top: 0;
+    left: 0;
+    background-position: top left;
+}
+.block .topright {
+    top: 0;
+    right: 0;
+    background-position: top right;
+}
+.block .bottomleft {
+    bottom: 0;
+    left: 0;
+    background-position: bottom left;
+}
+.block .bottomright {
+    bottom: 0;
+    right: 0;
+    background-position: bottom right;
+}
+
+.webcamGallery {
+    position: absolute;
+    height: 248px;
+    top: -8px;
+    left: -8px;
+}
+
+.rainRadar {
+    position: absolute;
+    height: 300px;
+    width: 300px;
+    top: -24px;
+    left: -8px;
+}
+
+.weatherForecast {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    border-collapse: collapse;
+    padding: 2px;
+    background-color: #326fc9;
+}
+
+.weatherForecast td.icon {
+    background-color: #326fc9;
+}
+.weatherForecast td.day {
+    color: white;
+    font-size: 10px;
+    line-height: 11px;
+    background-color: #326fc9;
+}
+
+.trafficCam {
+    position: absolute;
+    top:  -32px;
+    left: -24px;
+}
+.motorwayTraffic {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    padding: 2px;
+    border-collapse: collapse;
+    background-color: rgba(9, 9, 9, 0.4);
+    width: 226px;
+}
+.motorwayTraffic .table {
+}
+.motorwayTraffic td {
+    color: white;
+    font-size: 10px;
+    line-height: 11px;
+    width: 100%;
+}
+.motorwayTraffic td.outwards {
+    width: 12px;
+}
+.motorwayTraffic td.name {
+}
+.motorwayTraffic td.inwards {
+    width: 12px;
+}
+
+a.maxxlink,
+a.metvuwlink,
+a.metservicelink,
+a.webcamlink,
+a.nztalink,
+a.greylynnweatherlink,
+a.apodlink,
+a.xkcdlink {
+    position: absolute;
+    font-size: 8px;
+    line-height: 8px;
+    color: white;
+    text-decoration: none;
+}
+a.maxxlink,
+a.webcamlink,
+a.nztalink,
+a.metvuwlink,
+a.greylynnweatherlink,
+a.apodlink {
+    bottom: 1px;
+    left: 8px;
+}
+a.xkcdlink {
+    color: black;
+    bottom: 4px;
+    left: 8px;
+}
+a.metservicelink {
+    bottom: 10px;
+    left: 8px;
+}
+.busesFrom {
+    font-size: 10px;
+    line-height: 11px;
+    color: white;
+    margin-bottom: 8px;
+}
+.busesFrom .heading {
+    font-size: 14px;
+    line-height: 16px;
+    padding: 1px;
+    color: white;
+    padding-left: 2px;
+}
+.busTimeTable {
+    margin-bottom: 2px;
+}
+.busTimeTable .address {
+    padding-left: 2px;
+}
+.busTimeTable table {
+    font-size: 10px;
+    line-height: 11px;
+    width: 100%;
+}
+.busTimeTable td {
+    background-color: black;
+    padding: 1px 4px;
+    border-bottom:   1px solid #232;
+    color: grey;
+}
+.busTimeTable .GreatNorthRoad td,
+.busTimeTable .NewNorthRoad td,
+.busTimeTable .GreatNorthRoad td a,
+.busTimeTable .NewNorthRoad td a {
+    color:#C9C933;
+    font-weight:bold;
+}
+.busTimeTable a,
+.busTimeTable a:hover,
+.busTimeTable a:visited,
+.busTimeTable a:active {
+    color: grey;
+    text-decoration: none;
+}
+.busTimeTable td.route {
+    width: 15%;
+}
+.busTimeTable td.destination {
+    width: 60%;
+}
+.busTimeTable td.due {
+    width: 25%;
+    text-align: right;
+}
+
+.lightningDetector {
+    position: absolute;
+    top:  -180px;
+    left: -180px;
+}
+
+.astronomyPicture {
+    width: 600;
+    position: absolute;
+    top:  -68px;
+    left: -182px;
+}
+
+.xkcd img {
+    width: 242;
+    position: absolute;
+    top:   6px;
+    left:  4px;
+}
+
+.blog {
+    padding-top: 1px;
+    padding-bottom: 2px;
+    padding-left: 4px;
+}
+.blog .title {
+    font-size: 12px;
+    line-height: 13px;
+}
+.blog .title a {
+    color: #ddd;
+    font-weight:bold;
+    text-decoration: none;
+}
+.blog .entry {
+    font-size: 10px;
+    line-height: 10px;
+    padding-left: 1px;
+}
+.blog .entry a {
+    color: red;
+    text-decoration: none;
+}
+.blog .entry a.publishedToday {
+    font-weight:bold;
+}
+.bluehost {
+    font-size: 10px;
+    line-height: 10px;
+    color: cyan;
+}
+.bluehost a {
+    color: white;
+    text-decoration: none;
+}
