@@ -1,7 +1,7 @@
 <%inherit file="datamagic.html" />
 ## import the templates
 <%namespace name="busstop"    file="busstop.html"   />
-<%namespace name="trafficcam" file="trafficcam.html"/>
+<%namespace name="traffic" file="traffic.html"/>
 ##<%namespace name="blogroll"   file="blogroll.html"      />
 <%namespace name="webcam"     file="webcam.html"    />
 <%namespace name="weather"    file="weather.html"   />
@@ -18,7 +18,7 @@
 ## render the blocks
 <%self:block><img src="/datamagic/north.jpg" alt=""/></%self:block>
 ${busstop.block()}
-${trafficcam.block()}
+${traffic.block()}
 ##${blogroll.block()}
 ${apod.block()}
 ${webcam.block()}

@@ -8,7 +8,6 @@ import re
 from utils import AsyncWebData
 from BeautifulSoup import BeautifulSoup
 from datetime import datetime, time, date, timedelta
-from xml.etree.cElementTree import fromstring
 import logging
 
 TimeRE = re.compile("(\d+):(\d+)")
@@ -114,41 +113,5 @@ class BusStop(AsyncWebData):
         else:
             self.log.debug("no results table")
 
-class MotorwayTraffic(AsyncWebData):
-    def __init__(self, motorwayName):
-        self.motorwayName = motorwayName
-        self.updated  = ""
-        self.segments = []
-        self.addURL("http://www.trafficnz.info/xml/traffic", cachePeriod=45)
 
-    def parse(self, data):
-        tree = fromstring(data)
-        self.updated = tree.get('lastUpdated', '')
-        for motorway in tree.getiterator('motorway'):
-            if motorway.get('name') == self.motorwayName:
-                break
-        else:
-            return
-        locations = motorway.findall("location")
-        numSegments = len(locations) // 2
-        self.segments = [["", "", ""] for i in range(numSegments)]
-        for location in locations:
-            order = int(location.get('order', 0))
-            if order <= 0 or order > numSegments:
-                continue
-            inOut = location.get('inOut', '')
-            if inOut == "outbound":
-                segment = self.segments[numSegments - order]
-                segment[0] = location.get('congestion', '')
-            elif inOut == "inbound":
-                segment = self.segments[order - 1]
-                segment[1] = location.get('name', '')
-                segment[2] = location.get('congestion', '')
-
-
-if __name__ == "__main__":
-    from pprint import pprint
-    traffic = MotorwayTraffic('North-Western Motorway')
-    AsyncWebData.fetch(traffic)
-    pprint(traffic.segments)
 

@@ -9,6 +9,7 @@ import urllib
 import time
 import asyncore
 import socket
+import ssl
 import urlparse
 from cStringIO import StringIO
 from email.parser import HeaderParser
@@ -17,8 +18,6 @@ from cPickle import dump, load
 import signal
 SignalNames = dict([(y,x) for x,y in signal.__dict__.items() if x.startswith("SIG")])
 del signal
-from signal import signal, SIGINT, SIGTERM, SIGHUP
-
 
 def readPage(url):
     """Reads a web page off a website"""
@@ -37,6 +36,27 @@ def readPage(url):
     if net is not None:
         net.close()
     return page
+
+
+def compact_traceback():
+    t, v, tb = sys.exc_info()
+    tbinfo = []
+    if not tb: # Must have a traceback
+        raise AssertionError("traceback does not exist")
+    while tb:
+        tbinfo.append((
+            tb.tb_frame.f_code.co_filename,
+            tb.tb_frame.f_code.co_name,
+            str(tb.tb_lineno)
+            ))
+        tb = tb.tb_next
+
+    # just to be safe
+    del tb
+
+    file, function, line = tbinfo[-1]
+    info = ' '.join(['[%s|%s|%s]' % x for x in tbinfo])
+    return (file, function, line), t, v, info
 
 
 class __AsyncWebFetcher(object):
@@ -60,21 +80,24 @@ class __AsyncWebFetcher(object):
             with file(self.cachePath, "r") as fileIn:
                 self.cache = load(fileIn)
         self.cacheLoaded = time.time()
-        #self.oldSignals = {}
-        #for sigNum in (SIGINT, SIGTERM, SIGHUP):
-        #    oldHandler = signal(sigNum, self.shuttingDown)
-        #    if oldHandler:
-        #        self.oldSignals[sigNum] = oldHandler
 
     def shuttingDown(self, sigNum, frame):
         self.log.debug("got signal %s" % SignalNames.get(sigNum, str(sigNum)))
         # save the cache before exiting
         with file(self.cachePath, "w") as fileOut:
             dump(self.cache, fileOut)
-        #self.oldSignals.get(sigNum, lambda:None)(sigNum, frame)
 
-
-    def addURL(self, url, callback, name=None, cachePeriod=0, maxBytes=None):
+    def addURL(self, url, callback, name=None, cachePeriod=0,
+               maxBytes=None, extraHeaders=None):
+        """
+        adds a request to read a web page
+        url:          the url of another page to be read
+        callback:     function to be called when data is available
+        name:         alternative to the url (for caching and debugging)
+        cachePeriod:  the data is cached for cachePeriod seconds
+        maxBytes:     complete read even if unfinished once maxBytes is reached
+        extraHeaders: just for the bizarre authentication used by highwayinfo
+        """
         self.log.debug("add request for %s" % url)
         if not name:
             name = url
@@ -85,8 +108,12 @@ class __AsyncWebFetcher(object):
             self.log.debug("overwriting previous request %s" % prevRequest.url)
             if prevRequest.socket:
                 prevRequest.close()
-        self.requests[name] = AsyncWebRequest(url, name, callback,
-                                              cachePeriod, maxBytes)
+        if url.startswith("https:"):
+            self.requests[name] = AsyncHttpsRequest(url, name, callback, cachePeriod,
+                                                   maxBytes, extraHeaders)
+        else:
+            self.requests[name] = AsyncHttpRequest(url, name, callback, cachePeriod,
+                                                  maxBytes, extraHeaders)
 
     def removeURL(self, name=None):
         self.log.debug("remove request for %s" % name)
@@ -133,8 +160,8 @@ AsyncWebFetcher = __AsyncWebFetcher()
 
 
 # modified from example in http://effbot.org/librarybook/asyncore.htm
-class AsyncWebRequest(asyncore.dispatcher_with_send):
-    def __init__(self, url, name, callback, cachePeriod=0, maxBytes=None):
+class AsyncHttpRequest(asyncore.dispatcher_with_send):
+    def __init__(self, url, name, callback, cachePeriod=0, maxBytes=None, extraHeaders=None):
         asyncore.dispatcher_with_send.__init__(self)
         self.data        = StringIO()
         self.cachePeriod = cachePeriod
@@ -145,12 +172,15 @@ class AsyncWebRequest(asyncore.dispatcher_with_send):
         self.callback    = callback
         self.cache       = None
         scheme, host, path, params, query, fragment = urlparse.urlparse(self.url)
-        assert scheme == "http", "only supports HTTP requests"
+        self.scheme      = scheme
         try:
             host, port = host.split(":", 1)
             port = int(port)
         except (TypeError, ValueError):
-            port = 80 # default port
+            if scheme == "https":
+                port = 443
+            else:
+                port = 80 # default port
         self.host = host
         self.port = port
         self.log = logging.getLogger(self.name)
@@ -162,7 +192,11 @@ class AsyncWebRequest(asyncore.dispatcher_with_send):
             path = path + ";" + params
         if query:
             path = path + "?" + query
-        self.request = "GET %s HTTP/1.0\r\nHost: %s\r\n\r\n" % (path, host)
+        self.request = "GET %s HTTP/1.0\r\nHost: %s\r\n" % (path, host)
+        if extraHeaders:
+            for extraHeader in extraHeaders.items():
+                self.request += "%s: %s\r\n" % extraHeader
+        self.request += "\r\n"
 
     def load(self, map, cache):
         self._map   = None
@@ -233,8 +267,24 @@ class AsyncWebRequest(asyncore.dispatcher_with_send):
                 self.close()
 
     def handle_error(self):
-        self.log.error("handle error")
-        self.close()
+        nil, t, v, tbinfo = compact_traceback()
+
+        # sometimes a user repr method will crash.
+        try:
+            self_repr = repr(self)
+        except:
+            self_repr = '<__repr__(self) failed for object at %0x>' % id(self)
+
+        self.log_error(
+            'uncaptured python exception, closing channel %s (%s:%s %s)' % (
+                self_repr,
+                t,
+                v,
+                tbinfo
+                ),
+            'error'
+            )
+        self.handle_close()
 
     def handle_close(self):
         self.log.debug("handle close")
@@ -261,11 +311,83 @@ class AsyncWebRequest(asyncore.dispatcher_with_send):
         return self.getData()
 
 
+# TODO check out
+# http://bugs.python.org/file20752/asyncore_ssl_v1.patch
+class AsyncHttpsRequest(AsyncHttpRequest):
+    HandshakeDone, HandshakeRead, HandshakeWrite = range(3)
+    
+    def __init__(self, url, name, callback, cachePeriod=0, maxBytes=None, extraHeaders=None):
+        AsyncHttpRequest.__init__(self, url, name, callback, cachePeriod, maxBytes, extraHeaders)
+        self.doHandshake = AsyncHttpsRequest.HandshakeDone
+
+    def handle_connect(self):
+        self.log.debug("connect succeded")
+        self.socket = ssl.wrap_socket(self.socket, do_handshake_on_connect=False)
+        self.do_handshake()
+
+    def do_handshake(self):
+        try: 
+            self.socket.do_handshake() 
+        except ssl.SSLError, err: 
+            if err.args[0] == ssl.SSL_ERROR_WANT_READ: 
+                self.doHandshake = AsyncHttpsRequest.HandshakeRead
+                self.log.debug("HandshakeRead pending")
+            elif err.args[0] == ssl.SSL_ERROR_WANT_WRITE: 
+                self.doHandshake = AsyncHttpsRequest.HandshakeWrite
+                self.log.debug("HandshakeWrite pending")
+            else: 
+                raise 
+        else: 
+            self.doHandshake = AsyncHttpsRequest.HandshakeDone
+            self.log.debug("SSL handshake succeded, send %s" % self.request[:-2])
+            self.send(self.request)
+
+    def handle_read_event(self):
+        if self.doHandshake == AsyncHttpsRequest.HandshakeRead:
+            self.do_handshake()
+        if self.doHandshake == AsyncHttpsRequest.HandshakeDone:
+            AsyncHttpRequest.handle_read_event(self)
+
+    def recv(self, buffer_size):
+        try: 
+            data = AsyncHttpRequest.recv(self, buffer_size)
+            return data
+        except ssl.SSLError, err: 
+            if err.args[0] == ssl.SSL_ERROR_WANT_READ: 
+                self.log.debug("SSL read pending")
+                return ""
+            else: 
+                raise 
+        except:
+            raise 
+
+    def handle_write_event(self):
+        if self.doHandshake == AsyncHttpsRequest.HandshakeWrite:
+            self.do_handshake()
+        if self.doHandshake == AsyncHttpsRequest.HandshakeDone:
+            AsyncHttpRequest.handle_write_event(self)
+
+    def send(self, data):
+        try:
+            result = AsyncHttpRequest.send(self, data)
+            return result
+        except ssl.SSLError, err: 
+            if err.args[0] == ssl.SSL_ERROR_WANT_WRITE: 
+                self.log.debug("SSL write pending")
+                return 0
+            else: 
+                raise 
+        except:
+            raise 
+
+
 class AsyncWebData(object):
-    def addURL(self, url, pathVar='', cachePeriod=5, maxBytes=None):
+    def addURL(self, url, pathVar='', cachePeriod=5,
+               maxBytes=None, extraHeaders=None):
         self.fetchURL  = url
         self.fetchName = self.nameFromURL(url, pathVar)
-        AsyncWebFetcher.addURL(url, self.parse, self.fetchName, cachePeriod, maxBytes)
+        AsyncWebFetcher.addURL(url, self.parse, self.fetchName, cachePeriod, 
+                               maxBytes, extraHeaders)
 
     def nameFromURL(self, url, pathVar):
         """
