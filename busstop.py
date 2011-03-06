@@ -71,15 +71,16 @@ class BusStop(AsyncWebData):
         self.stopNumber = stopNumber
         self.log = logging.getLogger("BusStop "+stopNumber)
         self.log.debug("init")
-#        self.addURL("http://www.maxx.co.nz/_vpid.cfm?maxresults=%d&mode=bus&"
-#                    "query=vpid&stopNumber=%s&stopText=%s" %
-#                    (maxResults, stopNumber, stopNumber), pathVar=stopNumber)
         self.addURL("http://www.maxx.co.nz/_vpid.cfm?maxresults=%d&"
-                    "stopNumber=%s&fmsEnabled=false&saveStopNumber=true&"
-                    "standalone=false&showScheduledOnly=false" %
-                    (maxResults, stopNumber), pathVar=stopNumber)
+                    "stopNumber=%s" % (maxResults, stopNumber),
+                    pathVar=stopNumber)
+#        self.addURL("http://www.maxx.co.nz/_vpid.cfm?maxresults=%d&"
+#                    "stopNumber=%s&fmsEnabled=false&saveStopNumber=true&"
+#                    "standalone=false&showScheduledOnly=false" %
+#                    (maxResults, stopNumber), pathVar=stopNumber)
 
     def parse(self, data):
+        print data
         self.log.debug("parse %d bytes" % len(data))
         self.address  = ""
         self.asAt     = ""
@@ -100,9 +101,8 @@ class BusStop(AsyncWebData):
             rows = results.findAll("tr")
 
             self.accuracy = "scheduled"
-            if rows and rows[0].td.contents:
-                if "REAL time" in rows[0].td.contents[0]:
-                    self.accuracy = "real-time"
+            if rows and rows[0].find(text="REAL"):
+                self.accuracy = "real-time"
 
             for row in rows[2:]:
                 data = [td.contents[0].strip() for td in row.findAll("td")]
@@ -118,4 +118,13 @@ class BusStop(AsyncWebData):
             self.log.debug("no results table")
 
 
-
+if __name__ == "__main__":
+    from pprint import pprint
+    log = logging.getLogger()
+    log.addHandler(logging.StreamHandler())
+    log.setLevel(logging.DEBUG)
+    busstop = BusStop('8143')
+    AsyncWebData.fetch(busstop)
+    print busstop.accuracy
+    for bus in busstop.buses:
+        print bus.road, bus.route, bus.destination, bus.timeDue, bus.dueIn
