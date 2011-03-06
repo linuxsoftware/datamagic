@@ -3,7 +3,7 @@ import sys
 import os
 from os import path
 import logging
-home = "/home/djm/linuxsoftware/web"
+home = "/home/djm/linuxsoftware"
 sys.path.insert(0, path.join(home,'datamagic'))
 
 from datamagic import setupLogging, app, SaveYourselfServer

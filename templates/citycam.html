@@ -1,0 +1,15 @@
+<%inherit file="datamagic.html" />
+<%!
+from utils import AsyncWebData
+from sitecam import AucklandWebcam
+aklcam = AucklandWebcam()
+%>
+<% AsyncWebData.fetch(aklcam) %>
+${self.block()}
+
+<%def name="block()">
+  <%parent:block title="Auckland harbour" colour="purple">
+    <img src="${aklcam.url}" class="aucklandWebcam" alt="Auckland harbour"/>
+    <a class="sitecamlink" href="http://www.sitecam.co.nz/auckland_webcam/image.php?id=1">sitecam</a>
+  </%parent:block>
+</%def>

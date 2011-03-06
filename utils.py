@@ -106,8 +106,8 @@ class __AsyncWebFetcher(object):
         prevRequest = self.requests.get(name, None)
         if prevRequest is not None:
             self.log.debug("overwriting previous request %s" % prevRequest.url)
-            if prevRequest.socket:
-                prevRequest.close()
+            #if prevRequest.socket:
+            #    prevRequest.close()
         if url.startswith("https:"):
             self.requests[name] = AsyncHttpsRequest(url, name, callback, cachePeriod,
                                                    maxBytes, extraHeaders)
@@ -233,7 +233,8 @@ class AsyncHttpRequest(asyncore.dispatcher_with_send):
         return retval
 
     def handle_connect(self):
-        self.log.debug("connection succeded, send %s" % self.request[:-2])
+        requestLine1 = self.request.split("\r\n", 2)[0]
+        self.log.debug("connection succeded, send %s..." % requestLine1)
         self.send(self.request)
 
     def handle_read(self):
@@ -296,7 +297,7 @@ class AsyncHttpRequest(asyncore.dispatcher_with_send):
                 self.cache[self.name] = (self.lastFetched, data)
             self.callback(data)
         else:
-            status = "%s %s" % tuple(self.status[1:]) if self.status else ""
+            status = ("%s %s" % tuple(self.status[1:])) if self.status else ""
             self.log.error("closed on error %s" % status)
 
     def handle_expt(self):
@@ -335,6 +336,8 @@ class AsyncHttpsRequest(AsyncHttpRequest):
             elif err.args[0] == ssl.SSL_ERROR_WANT_WRITE: 
                 self.doHandshake = AsyncHttpsRequest.HandshakeWrite
                 self.log.debug("HandshakeWrite pending")
+            elif err.args[0] == ssl.SSL_ERROR_EOF:
+                return self.handle_close()
             else: 
                 raise 
         else: 

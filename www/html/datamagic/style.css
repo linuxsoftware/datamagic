@@ -173,6 +173,7 @@ a.metservicelink,
 a.webcamlink,
 a.nztalink,
 a.greylynnweatherlink,
+a.sitecamlink,
 a.apodlink,
 a.xkcdlink {
     position: absolute;
@@ -186,6 +187,7 @@ a.webcamlink,
 a.nztalink,
 a.metvuwlink,
 a.greylynnweatherlink,
+a.sitecamlink,
 a.apodlink {
     bottom: 1px;
     left: 8px;
@@ -260,11 +262,25 @@ a.metservicelink {
     left: -180px;
 }
 
+.greylynnCam {
+    position: absolute;
+    top:  -225px;
+    left: -50px;
+    width: 700px;
+}
+
 .astronomyPicture {
     width: 600;
     position: absolute;
     top:  -68px;
     left: -182px;
+}
+
+.aucklandWebcam {
+    width: 800px;
+    position: absolute;
+    top:  -235px;
+    left: -450px;
 }
 
 .xkcd img {

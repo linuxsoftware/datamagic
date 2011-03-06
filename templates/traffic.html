@@ -1,7 +1,7 @@
 <%inherit file="datamagic.html" />
 <%!
 from utils import AsyncWebData
-from transport import MotorwayTraffic
+from traffic import MotorwayTraffic
 traffic = MotorwayTraffic("North-Western Motorway")
 %>
 <% AsyncWebData.fetch(traffic) %>
