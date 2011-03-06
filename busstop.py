@@ -71,9 +71,13 @@ class BusStop(AsyncWebData):
         self.stopNumber = stopNumber
         self.log = logging.getLogger("BusStop "+stopNumber)
         self.log.debug("init")
-        self.addURL("http://www.maxx.co.nz/_vpid.cfm?maxresults=%d&mode=bus&"
-                    "query=vpid&stopNumber=%s&stopText=%s" %
-                    (maxResults, stopNumber, stopNumber), pathVar=stopNumber)
+#        self.addURL("http://www.maxx.co.nz/_vpid.cfm?maxresults=%d&mode=bus&"
+#                    "query=vpid&stopNumber=%s&stopText=%s" %
+#                    (maxResults, stopNumber, stopNumber), pathVar=stopNumber)
+        self.addURL("http://www.maxx.co.nz/_vpid.cfm?maxresults=%d&"
+                    "stopNumber=%s&fmsEnabled=false&saveStopNumber=true&"
+                    "standalone=false&showScheduledOnly=false" %
+                    (maxResults, stopNumber), pathVar=stopNumber)
 
     def parse(self, data):
         self.log.debug("parse %d bytes" % len(data))
