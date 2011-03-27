@@ -1,0 +1,20 @@
+<%inherit file="datamagic.html" />
+<%!
+from datetime import datetime, timedelta
+utc = datetime.utcnow() - timedelta(minutes=5)
+localtime = datetime.now().strftime("%Y-%m-%d %H:00")
+url = utc.strftime("http://www.jma.go.jp/en/gms/imgs_c/4/infrared/0/%Y%m%d%H00-00.png")
+%>
+${self.block()}
+
+<%def name="block()">
+  <%parent:block title="MTSAT at ${localtime}" colour="darkblue">
+    <img src="${url}"
+         style="position: absolute; width: 500px; top: -250px; left: -160px;" 
+         alt="MTSAT South East Image"/>
+    <a class="link" 
+      link="Japan Meteorological Agency MTSAT" 
+      href="http://www.jma.go.jp/jma/jma-eng/satellite">mtsat</a>
+
+  </%parent:block>
+</%def>
