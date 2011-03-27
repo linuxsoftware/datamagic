@@ -2,8 +2,8 @@
 <%!
 from utils import AsyncWebData
 from busstop import BusStop
-myBusStops = { "home": BusStop("8143"),
-               "work": [BusStop("7074"), BusStop("7093")] }
+myBusStops = { "home": BusStop("8143"), "work": BusStop("7074") }
+#"work": [BusStop("7074"), BusStop("7093")] }
 %>
 <% AsyncWebData.fetch(myBusStops["home"], myBusStops["work"]) %>
 ${self.block()}
@@ -13,6 +13,7 @@ ${self.block()}
     ${busesFrom("work")}
     ${busesFrom("home")}
     <a class="maxxlink" href="http://www.maxx.co.nz">maxx</a>
+    <a class="googtransitlink" href="http://www.google.com/maps?source=s_d&saddr=1679+Great+North+Rd,+Auckland,+New+Zealand&daddr=63+Albert+St,+Auckland+Central,+Auckland,+New+Zealand&dirflg=r&ttype=dep&z=13&">gtransit</a>
   </%parent:textblock>
 </%def>
 
@@ -44,7 +45,7 @@ ${self.block()}
         %for bus in busStop.buses[:maxResults]:
           <tr class="${bus.road}">
             <td class="route">
-              <a href="http://maxx.co.nz/timetables.html?query=timetable&routeText=${bus.route}" target="_blank">${bus.route}</a>
+              ${bus.route}
             </td>
             <td class="destination">${bus.destination}</td>
             <td class="due" title="${bus.timeDue}">${bus.dueIn}</td>

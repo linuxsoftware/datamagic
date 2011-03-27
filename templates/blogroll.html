@@ -19,25 +19,52 @@ feeds = [Feed(url) for url in blogRoll]
 ${self.block()}
 
 <%def name="block()">
-  <%parent:textblock title="Blog Roll" colour="black">
-    %for feed in feeds:
-      %if feed.entries:
-        <div class="blog">
-          <div class="title" title="${feed.info.get('subtitle','')}">
-            <a href="${feed.info.link}">${feed.title}</a>
-          </div>
-          <div class="entry" title="${re.sub('<.*?>','',feed.entries[0].get('summary',''))[:70]}">
-            <%
-              today = time.localtime()[:3]
-              updated = feed.entries[0].updated_parsed[:3]
-              publishDay = "publishedToday" if today == updated else ""
-            %>
-            <a href="${feed.entries[0].link}" class="${publishDay}">
-              ${feed.entries[0].title}
-            </a>
-          </div>
-        </div>
-      %endif
-    %endfor
-  </%parent:textblock>
+  <div class="outer">
+    <div class="black block" title="Blog Roll">
+      <div class="blogroll" style="height:232px; overflow:auto; padding: 4px 8px;">
+        %for feed in feeds:
+          %if feed.entries:
+            <div class="blog">
+              <div class="title" title="${feed.info.get('subtitle','')}">
+                <a href="${feed.info.link}">${feed.title}</a>
+              </div>
+              <div class="entry" title="${re.sub('<.*?>','',feed.entries[0].get('summary',''))[:70]}">
+                <%
+                  today = time.localtime()[:3]
+                  updated = feed.entries[0].updated_parsed[:3]
+                  publishDay = "publishedToday" if today == updated else ""
+                %>
+                <a href="${feed.entries[0].link}" class="${publishDay}">
+                  ${feed.entries[0].title}
+                </a>
+              </div>
+            </div>
+          %endif
+        %endfor
+        <!--
+        %for feed in feeds:
+          %if feed.entries:
+            <div class="blog">
+              <div class="title" title="${feed.info.get('subtitle','')}">
+                <a href="${feed.info.link}">${feed.title}</a>
+              </div>
+              <div class="entry" title="${re.sub('<.*?>','',feed.entries[0].get('summary',''))[:70]}">
+                <%
+                  today = time.localtime()[:3]
+                  updated = feed.entries[0].updated_parsed[:3]
+                  publishDay = "publishedToday" if today == updated else ""
+                %>
+                <a href="${feed.entries[0].link}" class="${publishDay}">
+                  ${feed.entries[0].title}
+                </a>
+              </div>
+            </div>
+          %endif
+        %endfor
+        -->
+      </div>
+    </div>
+    <div class="topleft corner"></div>
+    <div class="bottomleft corner"></div>
+  </div>
 </%def>

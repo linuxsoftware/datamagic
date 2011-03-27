@@ -10,7 +10,8 @@ ${self.block()}
 <%def name="block()">
   <%parent:block title="NorWestern Mway traffic ${traffic.updated}" colour="grey">
     <img src="http://traffic.transit.govt.nz/camera/140.jpg" 
-         class="trafficCam" alt="NorWestern Mway traffic"/>
+         style="position: absolute; top: -32px; left: -24px;"
+         alt="NorWestern Mway traffic"/>
     <div class="motorwayTraffic">
       <table border="0">
         <tbody>
@@ -34,6 +35,6 @@ ${self.block()}
         </tbody>
       </table>
     </div>
-    <a class="nztalink" href="http://www.trafficnz.info">nzta</a>
+    <a class="nztalink link" href="http://www.trafficnz.info">nzta</a>
   </%parent:block>
 </%def>

@@ -2,6 +2,7 @@
 .brown   { background: #ba9c80; }
 .wood    { background: #635445; }
 .blue    { background: #326fc9; }
+.darkblue { background: #2d2d7f; }
 .midnight { background: midnightblue; }
 .flax    { background: #ade09f; }
 .green   { background: green;   }
@@ -67,6 +68,10 @@ img {
     width: 250px;
     position: relative;
     overflow: hidden;
+
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-top: 10px;
 }
 
 .block .inner {
@@ -80,6 +85,7 @@ img {
     height: 8px;
     width:  8px;
     background-color: transparent;
+
 }
 .block .topleft {
     top: 0;
@@ -123,6 +129,9 @@ img {
     right: 0px;
     border-collapse: collapse;
     padding: 2px;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
     background-color: #326fc9;
 }
 
@@ -136,11 +145,6 @@ img {
     background-color: #326fc9;
 }
 
-.trafficCam {
-    position: absolute;
-    top:  -32px;
-    left: -24px;
-}
 .motorwayTraffic {
     position: absolute;
     top: 8px;
@@ -167,11 +171,12 @@ img {
     width: 12px;
 }
 
+a.link,
 a.maxxlink,
+a.googtransitlink,
 a.metvuwlink,
 a.metservicelink,
 a.webcamlink,
-a.nztalink,
 a.greylynnweatherlink,
 a.sitecamlink,
 a.apodlink,
@@ -181,14 +186,6 @@ a.xkcdlink {
     line-height: 8px;
     color: white;
     text-decoration: none;
-}
-a.maxxlink,
-a.webcamlink,
-a.nztalink,
-a.metvuwlink,
-a.greylynnweatherlink,
-a.sitecamlink,
-a.apodlink {
     bottom: 1px;
     left: 8px;
 }
@@ -197,6 +194,7 @@ a.xkcdlink {
     bottom: 4px;
     left: 8px;
 }
+a.googtransitlink,
 a.metservicelink {
     bottom: 10px;
     left: 8px;
@@ -290,6 +288,14 @@ a.metservicelink {
     left:  4px;
 }
 
+/* new blog roll style */
+.blogroll {
+    height:232px;
+    overflow:auto;
+    padding: 4px 8px;
+}
+
+/* old blog roll style */
 .blog {
     padding-top: 1px;
     padding-bottom: 2px;
