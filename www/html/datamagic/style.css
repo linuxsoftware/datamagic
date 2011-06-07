@@ -189,6 +189,7 @@ a.xkcdlink {
     bottom: 1px;
     left: 8px;
 }
+a.powershoplink,
 a.xkcdlink {
     color: black;
     bottom: 4px;
@@ -268,9 +269,9 @@ a.metservicelink {
 }
 
 .astronomyPicture {
-    width: 600;
+    width: 600px;
     position: absolute;
-    top:  -68px;
+    top:  -60px;
     left: -182px;
 }
 

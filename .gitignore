@@ -1,4 +1,5 @@
 password.py
+secret.py
 *.pyc
 *.o
 *.so

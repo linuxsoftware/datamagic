@@ -11,6 +11,10 @@ import logging
 
 
 class MotorwayTraffic(AsyncWebData):
+    # register at https://infoconnect.highwayinfo.govt.nz
+    username = "joe_user"
+    password = "secret"
+
     def __init__(self, motorwayName):
         self.motorwayName = motorwayName
         self.updated  = ""

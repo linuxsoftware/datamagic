@@ -8,7 +8,7 @@ import re
 from utils import AsyncWebData
 from BeautifulSoup import BeautifulSoup
 
-APoDSite = "antwrp.gsfc.nasa.gov"
+APoDSite = "apod.nasa.gov"
 
 class PictureOfTheDay(AsyncWebData):
     """Gets the latest Astronomical picture of the day"""

@@ -1,0 +1,9 @@
+<%inherit file="datamagic.html" />
+${self.block()}
+
+<%def name="block()">
+  <%parent:block title="Power usage for the last two weeks" colour="red">
+    <img src="/datamagic/powermonitor.png" class="powermonitor" />
+    <a class="powershoplink link" href="http://www.powershop.co.nz">powershop</a>
+  </%parent:block>
+</%def>

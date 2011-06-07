@@ -1,18 +1,19 @@
 <%inherit file="datamagic.html" />
 ## import the templates
-<%namespace name="traffic"     file="traffic.html"/>
-<%namespace name="apod"        file="apod.html"      />
-<%namespace name="blogroll"    file="blogroll.html"      />
-<%namespace name="bluehost"    file="bluehost.html"      />
-<%namespace name="busstop"     file="busstop.html"   />
-<%namespace name="citycam"     file="citycam.html"    />
-<%namespace name="contact"     file="contact.html"   />
-<%namespace name="greylynncam" file="greylynncam.html" />
-<%namespace name="kitchencam"  file="kitchencam.html"    />
-<%namespace name="lightning"   file="lightning.html" />
-<%namespace name="mtsat"       file="mtsat.html" />
-<%namespace name="weather"     file="weather.html"   />
-<%namespace name="xkcd"        file="xkcd.html"      />
+<%namespace name="traffic"      file="traffic.html"/>
+<%namespace name="apod"         file="apod.html"      />
+##<%namespace name="blogroll"     file="blogroll.html"      />
+<%namespace name="bluehost"     file="bluehost.html"      />
+<%namespace name="busstop"      file="busstop.html"   />
+<%namespace name="citycam"      file="citycam.html"    />
+<%namespace name="contact"      file="contact.html"   />
+<%namespace name="greylynncam"  file="greylynncam.html" />
+##<%namespace name="kitchencam"   file="kitchencam.html"    />
+<%namespace name="lightning"    file="lightning.html" />
+<%namespace name="mtsat"        file="mtsat.html" />
+<%namespace name="powermonitor" file="powermonitor.html" />
+<%namespace name="weather"      file="weather.html"   />
+<%namespace name="xkcd"         file="xkcd.html"      />
 
 ## load all the data in parallel
 <%!from utils import AsyncWebFetcher%>
@@ -21,11 +22,12 @@
 ## render the blocks
 ${weather.block()}
 ${traffic.block()}
-###${apod.block()}
-${blogroll.block()}
+${apod.block()}
+##${blogroll.block()}
 ${busstop.block()}
 ${citycam.block()}
 ${mtsat.block()}
+${powermonitor.block()}
 ##${kitchencam.block()}
 ${greylynncam.block()}
 ${lightning.block()}
